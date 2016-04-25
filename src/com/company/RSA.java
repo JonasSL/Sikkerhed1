@@ -1,6 +1,8 @@
 package com.company;
 
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
 public class RSA {
@@ -10,25 +12,35 @@ public class RSA {
     BigInteger q;
     BigInteger d;
     BigInteger n;
+    MessageDigest digest;
+    int k = 2000;
 
     public RSA() {
         e = BigInteger.valueOf(3);
         generatePrimes();
         d = keygen();
-        System.out.println("Your secret key: " + d);
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e1) {
+            System.out.println(e1);
+        }
     }
 
     public RSA(BigInteger d, BigInteger n) {
         e = BigInteger.valueOf(3);
         this.d = d;
         this.n = n;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e1) {
+            e1.printStackTrace();
+        }
     }
 
     /**
      * Generates valid primes p and q
      */
     private void generatePrimes() {
-        int k = 2000;
         p = BigInteger.probablePrime(k/2, new Random());
         q = BigInteger.probablePrime(k/2, new Random());
 
@@ -50,10 +62,8 @@ public class RSA {
         n = q.multiply(p);
         if (n.bitLength() != k) {
             generatePrimes();
-            System.out.println("n was not k bits long");
             return;
         }
-        System.out.println("Generated primes.");
     }
 
     /**
@@ -82,6 +92,38 @@ public class RSA {
      */
     public BigInteger decrypt(BigInteger ciphertext) {
         return ciphertext.modPow(d,n);
+    }
+
+    /**
+     * Signs a message by hashing and then signs it with the private key.
+     * @param message the message
+     * @return the signed message
+     */
+    public BigInteger sign(BigInteger message) {
+        long startTime = System.nanoTime();
+        digest.update(message.byteValue());
+        BigInteger hashedMessage = new BigInteger(1,digest.digest());
+        long endTime = System.nanoTime();
+
+        double duration = ((endTime - startTime)/1000000000.0);
+
+        System.out.println("Duration for hashing " + message.bitLength() + " bits: " + duration + " seconds");
+        System.out.println("Bits pr second: " + message.bitLength()/duration);
+        return decrypt(hashedMessage);
+
+    }
+
+    /**
+     * Verifies a signed text and a plain text
+     * @param signedText
+     * @param plainText
+     * @return boolean answer for the verification
+     */
+    public boolean verify(BigInteger signedText, BigInteger plainText) {
+        BigInteger hashedMessage = encrypt(signedText);
+        digest.update(plainText.byteValue());
+        BigInteger hashedPlainText = new BigInteger(1,digest.digest());
+        return hashedMessage.equals(hashedPlainText);
     }
 }
 
