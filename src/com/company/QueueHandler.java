@@ -53,11 +53,12 @@ public class QueueHandler {
             Certificate cert = (Certificate) input;
             history.add(cert);
             key = cert.number.modPow(x_mine,p);
+            System.out.println(key);
             if (!hasSentCert) {
                 sendCertificate();
             }
-        } else if (input instanceof ArrayList) {
-            ArrayList<Object> list = (ArrayList) input;
+        } else  {
+            ArrayList<Object> list = (ArrayList<Object>) input;
             System.out.println("is arraylist");
 
             for (int i = 0; i<list.size();i++) {
