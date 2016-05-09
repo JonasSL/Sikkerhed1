@@ -19,6 +19,11 @@ public class RSA {
         this.e = e;
         generatePrimes();
         d = keygen();
+        System.out.println("for " + e);
+        System.out.println("d : " + d);
+        System.out.println("n: " + n);
+        System.out.println("p: " + p);
+        System.out.println("q: " + q);
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e1) {
@@ -26,10 +31,13 @@ public class RSA {
         }
     }
 
-    public RSA(BigInteger d, BigInteger n) {
-        e = BigInteger.valueOf(3);
-        this.d = d;
-        this.n = n;
+    public RSA(BigInteger p, BigInteger q, BigInteger e) {
+        this.e = e;
+        this.p = p;
+        this.q = q;
+        n = q.multiply(p);
+        this.d = keygen();
+
         try {
             digest = MessageDigest.getInstance("SHA-256");
         } catch (NoSuchAlgorithmException e1) {
@@ -53,7 +61,7 @@ public class RSA {
             smallP = p.subtract(BigInteger.ONE);
         }
 
-        //Generate a new p until q-1 is relative prime to 3
+        //Generate a new q until q-1 is relative prime to 3
         while (!smallQ.gcd(e).equals(BigInteger.ONE)) {
             q = BigInteger.probablePrime(k/2, new Random());
             smallQ = q.subtract(BigInteger.ONE);
@@ -81,8 +89,8 @@ public class RSA {
      * @param message the message we want to encrypt
      * @return
      */
-    public BigInteger encrypt(BigInteger message) {
-        return message.modPow(e, n);
+    public BigInteger encrypt(BigInteger message, BigInteger pk) {
+        return message.modPow(pk, n);
     }
 
     /**
@@ -119,8 +127,8 @@ public class RSA {
      * @param plainText
      * @return boolean answer for the verification
      */
-    public boolean verify(BigInteger signedText, BigInteger plainText) {
-        BigInteger hashedMessage = encrypt(signedText);
+    public boolean verify(BigInteger signedText, BigInteger plainText, BigInteger pk) {
+        BigInteger hashedMessage = encrypt(signedText, pk);
         digest.update(plainText.byteValue());
         BigInteger hashedPlainText = new BigInteger(1,digest.digest());
         return hashedMessage.equals(hashedPlainText);

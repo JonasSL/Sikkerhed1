@@ -66,13 +66,15 @@ public class QueueHandler {
                     Certificate certMine = (Certificate) history.get(i);
                     Certificate certSigned = (Certificate) list.get(i);
 
-                    if (!(rsa.verify(certSigned.pk,certMine.pk))) {
+
+                    if (!(rsa.verify(certSigned.pk,certMine.pk,pk_other))) {
                         System.out.println(certMine.pk);
                         System.out.println(certSigned.pk);
                         System.out.println("pk");
                         return false;
                     }
-                    if (!(rsa.verify(certMine.number,certSigned.number))) {
+
+                    if (!(rsa.verify(certSigned.number,certMine.number, pk_other))) {
                         System.out.println(certMine.number);
                         System.out.println(certSigned.number);
                         System.out.println("number");
@@ -94,7 +96,6 @@ public class QueueHandler {
         for (Object obj: history) {
             if (obj instanceof Certificate) {
                 list.add(signCerficate((Certificate) obj));
-                System.out.println("at index " + history.indexOf(obj));
 
             } else {
                 list.add(rsa.sign((BigInteger) obj));
@@ -111,10 +112,8 @@ public class QueueHandler {
     }
 
     public Certificate signCerficate(Certificate cert) {
-        System.out.println("signed " + cert.pk + " , " + cert.number);
         BigInteger signedPk = rsa.sign(cert.pk);
         BigInteger signedNumber = rsa.sign(cert.number);
-        System.out.println("to " + signedPk + " , " + signedNumber);
         return new Certificate(signedPk,signedNumber);
     }
 
