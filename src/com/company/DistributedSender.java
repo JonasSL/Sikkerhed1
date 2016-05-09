@@ -27,7 +27,6 @@ public class DistributedSender implements Runnable {
             while(socket != null){
                 if ((qh.outputQueue.peek()) != null) {
                     objectOutput.writeObject(qh.outputQueue.take());
-                    System.out.println("sent from sender");
             }}
         } catch (Exception e) {
             System.err.println(e);

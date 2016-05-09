@@ -46,7 +46,6 @@ public class QueueHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        System.out.println("before if");
 
         if (input != null && input instanceof Certificate) {
             System.out.println("is certificate");
@@ -59,7 +58,6 @@ public class QueueHandler {
             }
         } else  {
             ArrayList<Object> list = (ArrayList<Object>) input;
-            System.out.println("is arraylist");
 
             for (int i = 0; i<list.size();i++) {
 
