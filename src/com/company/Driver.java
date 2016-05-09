@@ -7,7 +7,14 @@ public class Driver {
 
     public static void main(String[] args) {
         //Client
+        //How to run:
+        /*
+         Run DriverServer.
+         Write server IP in the client.run(ip) method.
+         Run Driver.
 
+
+         */
 
         BigInteger pk_mine = BigInteger.valueOf(3);
         BigInteger pk_other = BigInteger.valueOf(7);
