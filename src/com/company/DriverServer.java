@@ -25,10 +25,12 @@ public class DriverServer {
             @Override
             public void run() {
                 while(true) {
-                    qh.checkResponses();
+                    if (!qh.checkResponses()) {
+                        System.out.println("REJECT");
+                    }
                 }
             }
-        });
+        }).start();
 
 
 

@@ -107,8 +107,8 @@ public class RSA {
 
         double duration = ((endTime - startTime)/1000000000.0);
 
-        System.out.println("Duration for hashing " + message.bitLength() + " bits: " + duration + " seconds");
-        System.out.println("Bits pr second: " + message.bitLength()/duration);
+        //System.out.println("Duration for hashing " + message.bitLength() + " bits: " + duration + " seconds");
+        //System.out.println("Bits pr second: " + message.bitLength()/duration);
         return decrypt(hashedMessage);
 
     }

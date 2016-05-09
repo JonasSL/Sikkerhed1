@@ -29,7 +29,7 @@ public class DistributedServer implements Peer {
 
     public void run() {
         System.out.println("Server started");
-
+        System.out.println(getLocalHostAddress());
         registerOnPort();
 
         while (!wantToDC) {

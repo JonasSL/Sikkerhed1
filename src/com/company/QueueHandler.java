@@ -52,9 +52,10 @@ public class QueueHandler {
             Certificate cert = (Certificate) input;
             history.add(cert);
             key = cert.number.modPow(x_mine,p);
-            System.out.println(key);
             if (!hasSentCert) {
                 sendCertificate();
+            } else {
+                sendSignedMessages();
             }
         } else  {
             ArrayList<Object> list = (ArrayList<Object>) input;
@@ -63,12 +64,18 @@ public class QueueHandler {
 
                 if (list.get(i) instanceof Certificate) {
                     Certificate certMine = (Certificate) history.get(i);
-                    Certificate certOther = (Certificate) list.get(i);
+                    Certificate certSigned = (Certificate) list.get(i);
 
-                    if (!(rsa.verify(certMine.pk,certOther.pk))) {
+                    if (!(rsa.verify(certSigned.pk,certMine.pk))) {
+                        System.out.println(certMine.pk);
+                        System.out.println(certSigned.pk);
+                        System.out.println("pk");
                         return false;
                     }
-                    if (!(rsa.verify(certMine.number,certOther.number))) {
+                    if (!(rsa.verify(certMine.number,certSigned.number))) {
+                        System.out.println(certMine.number);
+                        System.out.println(certSigned.number);
+                        System.out.println("number");
                         return false;
                     }
                 }
@@ -87,6 +94,8 @@ public class QueueHandler {
         for (Object obj: history) {
             if (obj instanceof Certificate) {
                 list.add(signCerficate((Certificate) obj));
+                System.out.println("at index " + history.indexOf(obj));
+
             } else {
                 list.add(rsa.sign((BigInteger) obj));
             }
@@ -102,7 +111,11 @@ public class QueueHandler {
     }
 
     public Certificate signCerficate(Certificate cert) {
-        return new Certificate(rsa.sign(cert.pk),rsa.sign(cert.number));
+        System.out.println("signed " + cert.pk + " , " + cert.number);
+        BigInteger signedPk = rsa.sign(cert.pk);
+        BigInteger signedNumber = rsa.sign(cert.number);
+        System.out.println("to " + signedPk + " , " + signedNumber);
+        return new Certificate(signedPk,signedNumber);
     }
 
 
@@ -116,6 +129,7 @@ public class QueueHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("sent certificate");
         hasSentCert = true;
     }
 
