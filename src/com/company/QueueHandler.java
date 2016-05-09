@@ -46,8 +46,10 @@ public class QueueHandler {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        System.out.println("before if");
 
         if (input != null && input instanceof Certificate) {
+            System.out.println("is certificate");
             Certificate cert = (Certificate) input;
             history.add(cert);
             key = cert.number.modPow(x_mine,p);
@@ -56,8 +58,7 @@ public class QueueHandler {
             }
         } else if (input instanceof ArrayList) {
             ArrayList<Object> list = (ArrayList) input;
-
-
+            System.out.println("is arraylist");
 
             for (int i = 0; i<list.size();i++) {
 

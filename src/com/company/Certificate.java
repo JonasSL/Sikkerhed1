@@ -1,11 +1,12 @@
 package com.company;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 /**
  * Created by jonaslarsen on 09/05/2016.
  */
-public class Certificate {
+public class Certificate implements Serializable {
 
     BigInteger pk;
     BigInteger number;
