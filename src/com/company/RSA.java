@@ -15,8 +15,8 @@ public class RSA {
     MessageDigest digest;
     int k = 2000;
 
-    public RSA() {
-        e = BigInteger.valueOf(3);
+    public RSA(BigInteger e) {
+        this.e = e;
         generatePrimes();
         d = keygen();
         try {

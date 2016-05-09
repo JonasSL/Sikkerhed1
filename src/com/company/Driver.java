@@ -6,9 +6,37 @@ import java.util.Random;
 public class Driver {
 
     public static void main(String[] args) {
-        RSA rsa = new RSA();
+        //Client
+        BigInteger pk_mine = BigInteger.valueOf(3);
+        BigInteger pk_other = BigInteger.valueOf(5);
+        RSA rsa = new RSA(pk_mine);
 
-        BigInteger message = BigInteger.valueOf(2134);
+
+        QueueHandler qh = new QueueHandler(pk_mine,pk_other,rsa);
+
+
+        DistributedClient client = new DistributedClient(40123, qh);
+        System.out.println("After Client Run");
+        new Thread(new Runnable() {
+            public void run() {
+                client.run("10.192.114.243");
+            }
+        }).start();
+
+        qh.sendCertificate();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+               while(true) {
+                   qh.checkResponses();
+               }
+            }
+        });
+
+
+
+        /*BigInteger message = BigInteger.valueOf(2134);
 
         BigInteger signedMessage = rsa.sign(message);
 
@@ -35,7 +63,7 @@ public class Driver {
         rsa.decrypt(message2);
         endTime = System.nanoTime();
         duration = ((endTime - startTime)/1000000000.0);
-        System.out.println("Took " + duration + " seconds to sign message using RSA");
+        System.out.println("Took " + duration + " seconds to sign message using RSA");*/
 
     }
 
