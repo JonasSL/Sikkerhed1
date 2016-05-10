@@ -9,10 +9,10 @@ public class Driver {
         //Client
         //How to run:
         /*
+
          Run DriverServer.
          Write server IP in the client.run(ip) method.
          Run Driver.
-
 
          */
 
@@ -23,15 +23,12 @@ public class Driver {
 
         RSA rsa = new RSA(p,q,pk_mine);
 
-
         QueueHandler qh = new QueueHandler(pk_mine,pk_other,rsa);
 
-
         DistributedClient client = new DistributedClient(40123, qh);
-        System.out.println("After Client Run");
         new Thread(new Runnable() {
             public void run() {
-                client.run("192.168.0.100");
+                client.run("10.192.3.32");
             }
         }).start();
 
